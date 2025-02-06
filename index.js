@@ -6,8 +6,8 @@ app.use(express.json());  // Middleware para parsear JSON
 
 // Array temporal de productos
 let productos = [
-    { id: 1, nombre: 'Producto 1', precio: 100 },
-    { id: 2, nombre: 'Producto 2', precio: 200 },
+    { id: 1, nombre: 'Producto 1', precio: 100, imagenUrl: 'http://example.com/imagen1.jpg' },
+    { id: 2, nombre: 'Producto 2', precio: 200, imagenUrl: 'http://example.com/imagen2.jpg' },
 ];
 
 // Obtener todos los productos
@@ -24,13 +24,14 @@ app.get('/api/productos/:id', (req, res) => {
 
 // Crear un nuevo producto
 app.post('/api/productos', (req, res) => {
-    const { nombre, precio } = req.body;
-    if (!nombre || !precio) return res.status(400).json({ error: 'Nombre y precio son requeridos' });
+    const { nombre, precio, imagenUrl } = req.body;
+    if (!nombre || !precio || !imagenUrl) return res.status(400).json({ error: 'Nombre, precio e imagenUrl son requeridos' });
 
     const nuevoProducto = {
         id: productos.length + 1,
         nombre,
-        precio
+        precio,
+        imagenUrl
     };
     productos.push(nuevoProducto);
     res.status(201).json(nuevoProducto);
@@ -41,9 +42,10 @@ app.put('/api/productos/:id', (req, res) => {
     const producto = productos.find(p => p.id === parseInt(req.params.id));
     if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
 
-    const { nombre, precio } = req.body;
+    const { nombre, precio, imagenUrl } = req.body;
     if (nombre) producto.nombre = nombre;
     if (precio) producto.precio = precio;
+    if (imagenUrl) producto.imagenUrl = imagenUrl;
 
     res.json(producto);
 });
